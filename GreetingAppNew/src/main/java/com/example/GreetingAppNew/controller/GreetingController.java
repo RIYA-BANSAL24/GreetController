@@ -5,6 +5,8 @@ import com.example.GreetingAppNew.service.GreetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/greeting")
 public class GreetingController {
@@ -16,13 +18,26 @@ public class GreetingController {
         this.greetingService = greetingService;
     }
 
-    @GetMapping
-    public Greeting getGreeting(
+    @PostMapping
+    public Greeting createGreeting(
             @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName) {
 
-        return greetingService.getGreetingMessage(firstName, lastName);
+        return greetingService.saveGreeting(firstName, lastName);
     }
+
+    @GetMapping("/all")
+    public List<Greeting> getAllGreetings() {
+        return greetingService.getAllGreetings();
+    }
+
+//    @GetMapping
+//    public Greeting getGreeting(
+//            @RequestParam(value = "firstName", required = false) String firstName,
+//            @RequestParam(value = "lastName", required = false) String lastName) {
+//
+//        return greetingService.getGreetingMessage(firstName, lastName);
+//    }
 
 //    @GetMapping
 //    public Greeting getGreeting() {
@@ -34,19 +49,19 @@ public class GreetingController {
 //        return new Greeting("Hello, This is a GET Request!");
 //    }
 
-    @PostMapping
-    public Greeting postGreeting(@RequestBody Greeting greeting) {
-        return new Greeting("I have Received this via POST Request: " + greeting.getMessage());
-    }
-
-    @PutMapping
-    public Greeting putGreeting(@RequestBody Greeting greeting) {
-        return new Greeting("This has been Updated via PUT Request: " + greeting.getMessage());
-    }
-
-    @DeleteMapping
-    public Greeting deleteGreeting() {
-        return new Greeting("Your request is  deleted successfully!");
-    }
+//    @PostMapping
+//    public Greeting postGreeting(@RequestBody Greeting greeting) {
+//        return new Greeting("I have Received this via POST Request: " + greeting.getMessage());
+//    }
+//
+//    @PutMapping
+//    public Greeting putGreeting(@RequestBody Greeting greeting) {
+//        return new Greeting("This has been Updated via PUT Request: " + greeting.getMessage());
+//    }
+//
+//    @DeleteMapping
+//    public Greeting deleteGreeting() {
+//        return new Greeting("Your request is  deleted successfully!");
+//    }
 }
 

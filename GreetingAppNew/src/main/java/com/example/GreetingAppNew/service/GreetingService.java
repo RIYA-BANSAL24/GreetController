@@ -1,25 +1,45 @@
 package com.example.GreetingAppNew.service;
 
 import com.example.GreetingAppNew.model.Greeting;
+import com.example.GreetingAppNew.repository.GreetingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GreetingService {
 
-    public Greeting getGreetingMessage(String firstName, String lastName) {
+    private final GreetingRepository greetingRepository;
+
+    @Autowired
+    public GreetingService(GreetingRepository greetingRepository) {
+        this.greetingRepository = greetingRepository;
+    }
+
+    public Greeting saveGreeting(String firstName, String lastName) {
+        String message;
         if (firstName != null && lastName != null) {
-            return new Greeting("Hello, " + firstName + " " + lastName + "!");
+            message = "Hello, " + firstName + " " + lastName + "!";
         }
         else if (firstName != null) {
-            return new Greeting("Hello, " + firstName + "!");
+            message = "Hello, " + firstName + "!";
         }
         else if (lastName != null) {
-            return new Greeting("Hello, " + lastName + "!");
+            message = "Hello, " + lastName + "!";
         }
         else {
-            return new Greeting("Hello World!");
+            message = "Invalid firstName and lastName!";
         }
+
+        Greeting greeting = new Greeting(message);
+        return greetingRepository.save(greeting);
+    }
+
+    public List<Greeting> getAllGreetings() {
+        return greetingRepository.findAll();
     }
 }
+
 
 
