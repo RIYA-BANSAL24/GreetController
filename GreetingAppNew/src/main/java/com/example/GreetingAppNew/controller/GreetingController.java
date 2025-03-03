@@ -31,10 +31,10 @@ public class GreetingController {
         return greetingService.getAllGreetings();
     }
 
-    @GetMapping("/{id}")
-    public Greeting getGreetingById(@PathVariable Long id) {
-        return greetingService.getGreetingById(id);
-    }
+//    @GetMapping("/{id}")
+//    public Greeting getGreetingById(@PathVariable Long id) {
+//        return greetingService.getGreetingById(id);
+//    }
 
 //    @GetMapping
 //    public Greeting getGreeting(
