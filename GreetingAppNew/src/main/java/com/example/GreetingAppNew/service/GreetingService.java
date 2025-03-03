@@ -45,6 +45,15 @@ public class GreetingService {
         Optional<Greeting> greeting = greetingRepository.findById(id);
         return greeting.orElse(null);
     }
+
+    public Greeting updateGreeting(Long id, String newMessage) {
+        return greetingRepository.findById(id)
+                .map(greeting -> {
+                    greeting.setMessage(newMessage);
+                    return greetingRepository.save(greeting);
+                })
+                .orElseThrow(() -> new RuntimeException("Not found with ID: " + id));
+    }
 }
 
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/greeting")
@@ -31,11 +32,16 @@ public class GreetingController {
         return greetingService.getAllGreetings();
     }
 
-//    @GetMapping("/{id}")
-//    public Greeting getGreetingById(@PathVariable Long id) {
-//        return greetingService.getGreetingById(id);
-//    }
+    @GetMapping("/{id}")
+    public Greeting getGreetingById(@PathVariable Long id) {
+        return greetingService.getGreetingById(id);
+    }
 
+    @PutMapping("/{id}")
+    public Greeting updateGreeting(@PathVariable Long id, @RequestParam String newMessage) {
+        return greetingService.updateGreeting(id, newMessage);
+    }
+    
 //    @GetMapping
 //    public Greeting getGreeting(
 //            @RequestParam(value = "firstName", required = false) String firstName,
