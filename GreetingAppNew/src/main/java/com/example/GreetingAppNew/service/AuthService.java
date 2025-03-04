@@ -1,54 +1,58 @@
 package com.example.GreetingAppNew.service;
 
 import com.example.GreetingAppNew.dto.AuthUserDTO;
-import com.example.GreetingAppNew.dto.JwtResponse;
 import com.example.GreetingAppNew.dto.LoginDTO;
 import com.example.GreetingAppNew.model.AuthUser;
-import com.example.GreetingAppNew.repository.AuthUserRepository;
+import com.example.GreetingAppNew.dto.JwtResponse;
 import com.example.GreetingAppNew.security.JwtUtil;
+import com.example.GreetingAppNew.repository.AuthUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    private AuthUserRepository authUserRepository;
+    private final AuthUserRepository authUserRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtil jwtUtil;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @Transactional
     public String registerUser(AuthUserDTO userDTO) {
-        if (authUserRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            return "Email is already in use.";
+        Optional<AuthUser> user1 = authUserRepository.findByEmail(userDTO.getEmail());
+        if (user1.isPresent()){
+            throw new RuntimeException("Email is already in use!");
         }
 
-        AuthUser newUser = AuthUser.builder()
-                .firstName(userDTO.getFirstName())
-                .lastName(userDTO.getLastName())
-                .email(userDTO.getEmail())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .build();
+        // Hash the password
+        String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
 
-        authUserRepository.save(newUser);
-        return "User registered successfully!";
+        AuthUser user = new AuthUser();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        authUserRepository.save(user);
+
+
+        String token = JwtUtil.generateToken(user.getEmail());
+
+        return "User registered successfully! Token: " + token;
     }
 
-    public JwtResponse loginUser(LoginDTO loginDTO) {
-        Optional<AuthUser> user = authUserRepository.findByEmail(loginDTO.getEmail());
+    public String loginUser(LoginDTO loginDTO) {
+        AuthUser user = authUserRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new RuntimeException("Invalid email or password!"));
 
-        if (user.isEmpty() || !passwordEncoder.matches(loginDTO.getPassword(), user.get().getPassword())) {
-            throw new RuntimeException("Invalid credentials!");
+        if ( passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            return "Login successful! Check your email for login notification.";
+        } else {
+            throw new RuntimeException("Invalid email or password!");
         }
-
-        String token = jwtUtil.generateToken(user.get().getEmail());
-        return new JwtResponse(token);
     }
+
 }
