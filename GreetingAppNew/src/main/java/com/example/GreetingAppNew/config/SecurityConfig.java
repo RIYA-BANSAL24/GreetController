@@ -20,11 +20,14 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()  // ✅ Allow Register & Login
+                        //.requestMatchers("/auth/register", "/auth/login").permitAll()  // Allow Register & Login
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
+                );
+                //.sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
+
 
         return http.build();
     }
+
 }
