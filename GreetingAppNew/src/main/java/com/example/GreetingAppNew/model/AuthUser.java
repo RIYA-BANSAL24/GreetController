@@ -3,6 +3,7 @@ package com.example.GreetingAppNew.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Data
 @Entity
 @Table(name = "users")
 @Getter
@@ -13,6 +14,7 @@ import lombok.*;
 public class AuthUser {
 
     @Id
+//  GenerationType.IDENTITY is used in the RDBMS.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -20,7 +20,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/auth/register", "/auth/login").permitAll()  // Allow Register & Login
+                        .requestMatchers("/auth/register", "/auth/login",
+                                "/auth/forgotPass/{email}", "/auth/resetPass/{email}").permitAll()
+//                        SWAGGER UI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 );
